@@ -43,8 +43,8 @@ Future phases will introduce:
 | Name      | GitHub         | Responsibility                     |
 | --------- | -------------- | ---------------------------------- |
 | Oyetade Femi | `@FemiPrecious09` | Foundations & storage architecture |
-| Fahd  | `@member-b`    | Upload endpoint                    |
-| Adefolarin  | `@zKingFolly`    | Read/delete ownership logic        |
+| Sanni Fahd  | `@member-b`    | Upload endpoint                    |
+| Adeyemi Adefolarin  | `@zKingFolly`    | Read/delete ownership logic        |
 
 ---
 

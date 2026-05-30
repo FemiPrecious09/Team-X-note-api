@@ -17,8 +17,8 @@ This phase focused on building the document upload foundation, secure ownership 
 | Member    | GitHub         | Responsibilities                                                                                                                                                                                 |
 | --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Oyetade Femi | `@FemiPrecious09` | Repository and organization setup, branch protection rules, database migration for `documents`, storage abstraction layer (`utils/storage.js`), environment configuration, project documentation |
-| Fahd  | `@member-b`    | `POST /documents` upload endpoint, multipart form-data parsing, MIME-type sniffing, upload validation, file-size enforcement                                                                     |
-| Adefolarin  | `@zKingFolly`    | `GET /documents`, `GET /documents/:id`, `DELETE /documents/:id`, ownership enforcement, authentication integration                                                                               |
+| Sanni Fahd  | `@member-b`    | `POST /documents` upload endpoint, multipart form-data parsing, MIME-type sniffing, upload validation, file-size enforcement                                                                     |
+| Adeyemi Adefolarin  | `@zKingFolly`    | `GET /documents`, `GET /documents/:id`, `DELETE /documents/:id`, ownership enforcement, authentication integration                                                                               |
 
 ---
 
