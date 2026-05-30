@@ -3,6 +3,7 @@ const { getNoteId, getNote, addNote, replaceNote, updateNote, delNote, summarize
 const { authorize, authorizeOwner, authorizeRead } = require("../middlewares/auth");
 const router = express.Router()
 
+
 router.get("/", authorize, authorizeRead,  getNote);
 router.get("/:id", authorize, authorizeOwner, getNoteId);
 router.get("/:id/summary", authorize, authorizeOwner, summarizeNote);
