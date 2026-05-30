@@ -18,8 +18,10 @@ app.use((req,res,next)=>{
 const noteRoute = require("./routes/notes_route")
 const userRoute = require("./routes/auth_route")
 const { getAllNote } = require("./controllers/notes_controller")
+const docRoute = require("./routes/document_route")
 
 app.use("/user/note", noteRoute)
+app.use("/user", docRoute)
 app.use("/auth", userRoute)
 
 app.get("/note", getAllNote)
