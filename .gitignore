@@ -1,4 +1,28 @@
+# Dependencies
 node_modules/
+
+# Environment variables (never commit secrets)
 .env
-.DS_Store
+.env.local
+.env.*.local
+
+# Uploaded files (never commit user data)
+storage/uploads/
+!storage/uploads/.gitkeep
+
+# Logs
+logs/
 *.log
+npm-debug.log*
+
+# Build / coverage output
+dist/
+build/
+coverage/
+
+# OS & editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

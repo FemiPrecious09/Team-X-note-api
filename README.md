@@ -1,10 +1,10 @@
 # Document Intelligence Platform
 
-Backend team project for **Phase 2** of the IEEE × GitHub Campus Experts 10-Day Codeathon.
+Backend team project for **Phase 2** of the IEEE × GitHub Campus Experts 10-Day Codeathon — Backend Track.
 
-This project extends our earlier Notes API into a **Document Intelligence Platform** where authenticated users can upload PDFs, manage stored documents, and eventually interact with them using AI-powered chat and retrieval systems.
+This project extends our earlier Notes API into a **Document Intelligence Platform** where authenticated users can upload PDFs, manage stored documents, and eventually interact with them using AI-powered document chat and retrieval systems.
 
-The repository was bootstrapped from our Phase 1 Notes API and expanded into a document-processing backend architecture.
+The repository was bootstrapped from our Phase 1 Notes API and expanded into a scalable document-processing backend architecture.
 
 ---
 
@@ -26,8 +26,8 @@ This phase focuses on:
 * Secure PDF uploads
 * File storage architecture
 * Ownership-based authorization
-* Background document processing preparation
-* Scalable document management APIs
+* Background processing preparation
+* Scalable document-management APIs
 
 Future phases will introduce:
 
@@ -40,11 +40,11 @@ Future phases will introduce:
 
 # Team
 
-| Name     | GitHub      | Responsibility                    |
-| -------- | ----------- | --------------------------------- |
-| You      | `@you`      | Foundations, storage architecture |
-| Member B | `@member-b` | Upload endpoint                   |
-| Member C | `@member-c` | Read/delete ownership logic       |
+| Name      | GitHub         | Responsibility                     |
+| --------- | -------------- | ---------------------------------- |
+| Oyetade Femi | `@FemiPrecious09` | Foundations & storage architecture |
+| Fahd  | `@member-b`    | Upload endpoint                    |
+| Adefolarin  | `@zKingFolly`    | Read/delete ownership logic        |
 
 ---
 
@@ -54,13 +54,16 @@ Future phases will introduce:
 
 * JWT-authenticated API
 * PDF upload support
-* Secure document ownership
+* Secure ownership validation
 * List uploaded documents
 * Retrieve document metadata
 * Delete uploaded documents
-* Local-disk storage abstraction
 * PostgreSQL persistence
+* Local-disk storage
 * Modular Express architecture
+* Centralized error handling
+
+---
 
 ## Planned Features
 
@@ -70,36 +73,44 @@ Future phases will introduce:
 * Semantic search
 * Background processing queues
 * Cloud object storage support
+* AI summarization
 
 ---
 
 # Tech Stack
 
-| Layer          | Technology          |
-| -------------- | ------------------- |
-| Runtime        | Node.js (v18+)      |
-| Framework      | Express.js          |
-| Database       | PostgreSQL          |
-| Authentication | JWT                 |
-| Storage        | Local disk storage  |
-| Architecture   | Modular MVC backend |
+| Layer          | Technology           |
+| -------------- | -------------------- |
+| Runtime        | Node.js (v18+)       |
+| Framework      | Express.js           |
+| Database       | PostgreSQL           |
+| Authentication | JWT (`jsonwebtoken`) |
+| Storage        | Local disk storage   |
+| Architecture   | Modular MVC backend  |
 
 ---
 
 # Project Structure
 
-```txt id="m2r0kx"
+```txt
 .
+├── config/
 ├── controllers/
-├── routes/
-├── models/
-├── middlewares/
-├── services/
-├── storage/
 ├── db/
+├── middlewares/
+├── migrations/
+├── models/
+├── routes/
+├── utils/
+│   ├── groq_util.js
+│   └── storage.js
+├── storage/
+│   └── uploads/
 ├── server.js
 ├── .env
 ├── .env.example
+├── .gitignore
+├── CONTRIBUTORS.md
 ├── package.json
 └── README.md
 ```
@@ -108,13 +119,13 @@ Future phases will introduce:
 
 # API Base Path
 
-```txt id="9y5nbo"
+```txt
 /api/v1
 ```
 
 All document endpoints require:
 
-```http id="9c1b5v"
+```http
 Authorization: Bearer <token>
 ```
 
@@ -142,16 +153,16 @@ Authorization: Bearer <token>
 
 ## 1. Clone the Repository
 
-```bash id="ixrm4m"
-git clone https://github.com/<your-org>/document-intelligence-platform.git
-cd document-intelligence-platform
+```bash
+git clone https://github.com/<your-org>/<your-repo>.git
+cd <your-repo>
 ```
 
 ---
 
 ## 2. Install Dependencies
 
-```bash id="q9o2a2"
+```bash
 npm install
 ```
 
@@ -159,17 +170,23 @@ npm install
 
 ## 3. Configure Environment Variables
 
-```bash id="hm5sl9"
-cp .env.example .env
+Create a `.env` file in the project root:
+
+```env
+DATABASE_URL=postgresql://username:password@localhost:5432/database_name
+JWT_SECRET=your_jwt_secret
+STORAGE_LOCAL_DIR=storage/uploads
+MAX_FILE_SIZE_BYTES=10485760
+ACTIVE_PORT=8800
 ```
 
-Update `.env` with your real configuration values.
+You should also create a `.env.example` file with the same placeholder variables.
 
 ---
 
 ## 4. Run Database Migrations
 
-```bash id="54z9t9"
+```bash
 npm run migrate up
 ```
 
@@ -177,14 +194,21 @@ npm run migrate up
 
 ## 5. Start the Development Server
 
-```bash id="s4xf0k"
+```bash
 npm run dev
 ```
 
 Production mode:
 
-```bash id="n2q3zc"
+```bash
 npm start
+```
+
+Expected output:
+
+```txt
+Database connected Successfully
+Server is ACTIVE🔥🔥 on http://localhost:8800
 ```
 
 ---
@@ -195,38 +219,36 @@ npm start
 | ------------------- | ---------------------------- |
 | DATABASE_URL        | PostgreSQL connection string |
 | JWT_SECRET          | JWT signing secret           |
-| STORAGE_DRIVER      | Storage backend (`local`)    |
 | STORAGE_LOCAL_DIR   | Local upload directory       |
 | MAX_FILE_SIZE_BYTES | Upload size limit            |
+| ACTIVE_PORT         | Express server port          |
 
-See `.env.example` for the full configuration reference.
+See `.env.example` for the complete configuration reference.
 
 ---
 
 # Storage Architecture
 
-The platform uses a swappable storage abstraction layer.
+The platform currently stores uploaded files on local disk through a dedicated storage utility layer.
 
-Current implementation:
-
-```txt id="yobdn9"
+```txt
 Client Upload
     ↓
 Express Route
     ↓
-Storage Service
+Storage Utility
     ↓
 Local Disk Storage
 ```
 
-This architecture allows future migration to:
+The architecture was intentionally designed so the storage implementation can later be replaced with cloud providers such as:
 
 * AWS S3
 * Cloudflare R2
 * Google Cloud Storage
 * Azure Blob Storage
 
-without changing the upload API itself.
+without changing the API layer itself.
 
 ---
 
@@ -238,6 +260,7 @@ without changing the upload API itself.
 * Environment-variable secrets management
 * Protected upload directories
 * Centralized error handling
+* `.env` excluded from version control
 
 ---
 
@@ -254,10 +277,10 @@ without changing the upload API itself.
 
 ## Example Workflow
 
-```bash id="xhjlwm"
+```bash
 git checkout -b feat/your-feature
 
-# commit changes
+# commit your changes
 
 git push -u origin feat/your-feature
 ```
@@ -279,7 +302,7 @@ Then open a Pull Request on GitHub.
 * Queue workers
 * Cloud storage support
 * Docker deployment
-* OpenAPI / Swagger docs
+* Swagger / OpenAPI documentation
 * Automated tests
 
 ---
@@ -288,11 +311,11 @@ Then open a Pull Request on GitHub.
 
 See:
 
-```txt id="w6gnlf"
+```txt
 CONTRIBUTORS.md
 ```
 
-for contribution details and task ownership.
+for detailed contribution ownership.
 
 ---
 
