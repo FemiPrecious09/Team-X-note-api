@@ -1,43 +1,45 @@
-require("dotenv").config()
-const express = require("express")
-const cookie = require("cookie-parser")
-const app = express()
+require("dotenv").config();
+const express = require("express");
+const cookie = require("cookie-parser");
+const app = express();
 
-app.use(cookie())
-app.use(express.json())
+app.use(cookie());
+app.use(express.json());
 
-app.use((req,res,next)=>{
- const start =  Date.now()
- res.on("finish", ()=>{
-  const finish =  Date.now() - start
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl} ${res.statusCode} ${finish}`)
- })
- next()
-})
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on("finish", () => {
+    const finish = Date.now() - start;
+    console.log(
+      `[${new Date().toISOString()}] ${req.method} ${req.originalUrl} ${res.statusCode} ${finish}`,
+    );
+  });
+  next();
+});
 
-const noteRoute = require("./routes/notes_route")
-const userRoute = require("./routes/auth_route")
-const { getAllNote } = require("./controllers/notes_controller")
-const docRoute = require("./routes/document_route")
+const noteRoute = require("./routes/notes_route");
+const userRoute = require("./routes/auth_route");
+const { getAllNote } = require("./controllers/notes_controller");
+const documentRoute = require("./routes/document_route");
+const docRoute = require("./routes/document_route");
 
-app.use("/user/note", noteRoute)
-app.use("/user", docRoute)
-app.use("/auth", userRoute)
+app.use("/user/note", noteRoute);
+app.use("/api/documents", documentRoute);
+app.use("/user", docRoute);
+app.use("/auth", userRoute);
 
-app.get("/note", getAllNote)
+app.get("/note", getAllNote);
 
-app.use((req,res)=>{
- res.status(404).send("Route not found")
-}) // 404 before Error
+app.use((req, res) => {
+  res.status(404).send("Route not found");
+}); // 404 before Error
 
+app.use((err, req, res, next) => {
+  console.log(err.stack);
+  res.status(500).send("Error in the server");
+});
 
-app.use((err,req,res,next)=>{
- console.log(err.stack)
- res.status(500).send("Error in the server")
-})
-
-
-const PORT = process.env.ACTIVE_PORT || 3500
-app.listen(PORT,()=>{
- console.log(`Server is ACTIVE🔥🔥 on http://localhost:${PORT}`)
-})
+const PORT = process.env.ACTIVE_PORT || 3500;
+app.listen(PORT, () => {
+  console.log(`Server is ACTIVE🔥🔥 on http://localhost:${PORT}`);
+});
