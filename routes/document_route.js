@@ -1,10 +1,41 @@
 const express = require("express");
-const { authorize} = require("../middlewares/auth");
-const { uploadPdf } = require("../controllers/document_controller");
+const multer = require("multer");
+const { authorize } = require("../middlewares/auth");
+const {
+  listDocuments,
+  getDocument,
+  uploadDocument,
+  deleteDocument,
+} = require("../controllers/document_controller");
 
-const { handleUpload } = require("../middlewares/errorhandler");
-const router = express.Router()
+const router = express.Router();
 
-router.post("/document", authorize, handleUpload,uploadPdf)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: parseInt(process.env.MAX_FILE_SIZE_BYTES) || 10 * 1024 * 1024,
+  },
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype === "application/pdf") return cb(null, true);
+    cb(new Error("Only PDF files are allowed"));
+  },
+});
 
-module.exports = router
+router.get("/", authorize, listDocuments);
+router.get("/:id", authorize, getDocument);
+router.post("/", authorize, upload.single("file"), uploadDocument);
+router.delete("/:id", authorize, deleteDocument);
+
+router.use((err, req, res, next) => {
+  if (err.message === "Only PDF files are allowed") {
+    return res.status(415).json({ message: err.message });
+  }
+  if (err.code === "LIMIT_FILE_SIZE") {
+    return res
+      .status(413)
+      .json({ message: "File exceeds maximum allowed size" });
+  }
+  next(err);
+});
+
+module.exports = router;
